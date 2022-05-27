@@ -4,7 +4,7 @@ import './Infobox.css'
 
 function Infobox({title, cases , total}) {
   return (
-    <Card>
+    <Card className='card1'>
       <CardContent className='box'>
           <Typography className='title' color='textSecondary'>
               {title}

@@ -56,7 +56,7 @@ function App() {
     <div className="App">
       <div className="leftcon">
       <div className='header'>
-      <h1>covid tracker</h1>
+      <h1>covid-19 tracker</h1>
       <FormControl className='dropdowncon'>
         <Select variant='outlined' value={selectcountry} onChange={oncountrychange}>
         <MenuItem value="worldwide">Worldwide</MenuItem>
@@ -71,13 +71,16 @@ function App() {
         <Infobox title="Recovered" cases={countryinfo.todayRecovered} total={countryinfo.recovered} />
         <Infobox title="Deaths" cases={countryinfo.todayDeaths} total={countryinfo.deaths} />
       </div>
+      <div className='gr'>
+      <h1>Worldwide New Cases</h1>
+      <Graph/>
+      </div>
       </div>
       <Card className="rightcon">
         <CardContent>
           <h3>Live Cases By Countries</h3>
           <Table countries={tabledata}/>
         </CardContent>
-      <Graph/>
       </Card>
     </div>
   );

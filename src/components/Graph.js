@@ -1,68 +1,29 @@
-import React, { useEffect, useState } from 'react'
-import { Line } from 'react-chartjs-2'
-import './Graph.css'
+import React, { useState, useEffect } from "react";
+import { Line } from "react-chartjs-2";
 import numeral from "numeral";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  } from 'chart.js';
-  ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-  );
+import { Chart as ChartJS, registerables } from 'chart.js';
+ChartJS.register(...registerables);
 
 const options = {
-  legend: {
-    display: false,
+  plugins: {
+    legend: {
+      display: false
+    },
   },
   elements: {
     point: {
       radius: 0,
     },
   },
-  maintainAspectRatio: false,
+  maintainAspectRatio: true,
   tooltips: {
     mode: "index",
     intersect: false,
     callbacks: {
-      label: function (tooltipItem, data) {
+      label: function (tooltipItem) {
         return numeral(tooltipItem.value).format("+0,0");
       },
     },
-  },
-  scales: {
-    xAxes: [
-      {
-        type: "time",
-        time: {
-          format: "MM/DD/YY",
-          tooltipFormat: "ll",
-        },
-      },
-    ],
-    yAxes: [
-      {
-        gridLines: {
-          display: false,
-        },
-        ticks: {
-          callback: function (value, index, values) {
-            return numeral(value).format("0a");
-          },
-        },
-      },
-    ],
   },
 };
 
@@ -82,44 +43,44 @@ const buildChartData = (data, casesType="cases") => {
   return chartData;
 };
 
-function Map({casesType="deaths"}) {
-  const [data,setdata] = useState({});
+function Graph({ casesType="cases" }) {
+  const [data, setData] = useState({});
 
-  const fetchData = async () => {
-    await fetch("https://disease.sh/v3/covid-19/historical/all?lastdays=120")
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        let chartData = buildChartData(data,casesType);
-        setdata(chartData);
-        console.log(chartData);
-      });
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetch("https://disease.sh/v3/covid-19/historical/all?lastdays=120")
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          let chartData = buildChartData(data, casesType);
+          setData(chartData);
+          console.log(chartData);
+          // buildChart(chartData);
+        });
+    };
 
-  useEffect(()=>{
     fetchData();
-  },[casesType])
+  }, [casesType]);
 
- 
   return (
-    <div className='graph'>
-       {data?.length > 0 && (
-      <Line
-        data={{
-          datasets: [
-            {
-              backgroundColor: "rgba(204, 16, 52, 0.5)",
-              borderColor: "#CC1034",
-              data: data,
-            },
-          ],
-        }}
-        options={options}
-      />
+    <div className="graph">
+      {data?.length > 0 && (
+        <Line
+          data={{
+            datasets: [
+              {
+                backgroundColor: "rgba(204, 16, 52, 0.5)",
+                borderColor: "#CC1034",
+                data: data,
+              },
+            ],
+          }}
+          options={options}
+        />
       )}
     </div>
-  )
+  );
 }
 
-export default Map
+export default Graph;
